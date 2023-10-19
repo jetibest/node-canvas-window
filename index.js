@@ -51,6 +51,11 @@ function createWindow(options)
 	{
 		this.drawContext(this.context);
 	};
+
+	function strtohtml(str)
+	{
+		return (str +'').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+	}
 	
 	return new Promise((resolve, reject) =>
 	{
@@ -61,10 +66,10 @@ function createWindow(options)
 				'<!DOCTYPE html>' +
 				'<html>' +
 				'<head>' +
-					'<title>' + window.title + '</title>' +
+					'<title>' + strtohtml(window.title) + '</title>' +
 					'<style>' +
-						'html,body{background-color: #000;margin: 0;padding: 0;width: 100%;height: 100%;}' +
-						'canvas{max-width: 100%;max-height: 100%;width: auto;height: auto;object-fit: contain;}' +
+						'html,body{background-color: #000;color: #999;margin: 0;padding: 0;width: 100%;height: 100%;}' +
+						'canvas{width: 100%;height: 100%;object-fit: contain;}' +
 					'</style>' +
 				'</head>' +
 				'<body>' +
@@ -116,17 +121,14 @@ function createWindow(options)
 					'};' +
 					'ws.onmessage = function(e)' +
 					'{' +
-						'console.log(e.data);' +
 						'context.putImageData(new ImageData(new Uint8ClampedArray(e.data), ' + window.width + ', ' + window.height + '), 0, 0);' +
 					'};' +
 					'ws.onclose = function(e)' +
 					'{' +
 						// todo: implement an automatic reconnection mechanism (?)
 						'document.body.innerHTML = "<center><h1>Connection lost. Close this window.</h1></center>";' +
-						'setTimeout(function(){' +
 						'try { window.close(); } catch(err) {}' +
 						'window.location.href = "about:blank";' +
-						'}, 2000);' +
 					'};' +
 					'</script>' +
 				'</body>' +
