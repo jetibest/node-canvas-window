@@ -69,7 +69,7 @@ function createWindow(options)
 					'<title>' + strtohtml(window.title) + '</title>' +
 					'<style>' +
 						'html,body{background-color: #000;color: #999;margin: 0;padding: 0;width: 100%;height: 100%;}' +
-						'canvas{width: 100%;height: 100%;object-fit: contain;}' +
+						'canvas{width: 100%;height: 100%;object-fit: contain;display: block;}' +
 					'</style>' +
 				'</head>' +
 				'<body>' +
