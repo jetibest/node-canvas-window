@@ -87,7 +87,21 @@ function createWindow(options)
 						'}' +
 						'function createPointerEvent(e, opt)' +
 						'{' +
-							'return Object.assign({type: "event", pointerId: e.pointerId, pointerType: e.pointerType, isPrimary: e.isPrimary, x: e.clientX, y: e.clientY, width: e.width, height: e.height, pressure: e.pressure}, opt);' +
+							'let x = e.clientX, y = e.clientY;' +
+							// assuming object-fit: contain
+							'let w = canvas.offsetWidth, h = canvas.offsetHeight;' +
+							'let wr = w / canvas.width, hr = h / canvas.height;' +
+							'if(wr < hr)' +
+							'{' +
+								'y = (y - (h - canvas.height * wr) / 2) / wr;' + // remove half of the black horizontal bars
+								'x = x / wr;' +
+							'}' +
+							'else ' +
+							'{' +
+								'x = (x - (w - canvas.width * hr) / 2) / hr;' + // remove half of the black vertical bars
+								'y = y / hr;' +
+							'}' +
+							'return Object.assign({type: "event", pointerId: e.pointerId, pointerType: e.pointerType, isPrimary: e.isPrimary, x: x, y: y, width: e.width, height: e.height, pressure: e.pressure}, opt);' +
 						'}' +
 						'function createKeyEvent(e, opt)' +
 						'{' +
