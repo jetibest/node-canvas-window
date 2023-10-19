@@ -1,6 +1,5 @@
 {
   "name": "canvas-window",
-  "type": "module",
   "version": "1.0.0",
   "description": "node-canvas-window exports a Canvas to a browser window for Node.js",
   "main": "index.js",

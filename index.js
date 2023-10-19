@@ -1,10 +1,9 @@
-import { EventEmitter } from 'node:events';
-import http from 'node:http';
-import open from 'open';
-import { WebSocketServer } from 'ws';
-import { createCanvas } from 'canvas';
+const EventEmitter = require('node:events');
+const http = require('node:http');
+const { WebSocketServer } = require('ws');
+const { createCanvas } = require('canvas');
 
-export function createWindow(options)
+function createWindow(options)
 {
 	options = options || {};
 	
@@ -15,7 +14,7 @@ export function createWindow(options)
 	window.title = options.title || 'NodeJS Window';
 	window.width = options.width || (typeof options.canvas === 'object' ? options.canvas.width : 0) || 1280;
 	window.height = options.height || (typeof options.canvas === 'object' ? options.canvas.height : 0) || 720;
-	if(typeof options.context !== 'object' || typeof options.context.getImageData !== 'function')
+	if(typeof options.context === 'object' && typeof options.context.getImageData === 'function')
 	{
 		window.canvas = options.canvas || null;
 		window.context = options.context;
@@ -145,6 +144,7 @@ export function createWindow(options)
 		{
 			try
 			{
+				const open = (await import('open')).default;
 				const addr = window.webserver.address();
 				
 				window.host = addr.address;
@@ -219,3 +219,5 @@ export function createWindow(options)
 		window.webserver.listen(window.port, window.host);
 	});
 }
+
+module.exports = { createWindow };
