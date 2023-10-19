@@ -15,41 +15,52 @@ When moving a pointer (mouse/touch) over the browser window, a small magenta rec
 ```js
 const { createWindow } = require('canvas-window');
 
-const window = await createWindow({
-  width: 800,
-  height: 600,
-  title: 'My Window'
-});
-// window may emit the following events:
-//   - websocketOpen, websocketError, websocketClose
-//   - exit
-//   - pointerdown, pointermove, pointerup
-//   - keydown, keyup
-
-const ctx = window.context;
-const model = {pointer: {x: 0, y: 0}, parity: false};
-
-function repaint()
+(async () =>
 {
-  ctx.fillStyle = '#333';
-  ctx.fillRect(0, 0, 800, 600);
-
-  ctx.fillStyle = (model.parity = !model.parity) ? '#393' : '#963';
-  ctx.fillRect(100, 100, 600, 400);
+  const window = await createWindow({
+    width: 800,
+    height: 600,
+    title: 'My Window'
+  });
+  // window may emit the following events:
+  //   - websocketOpen, websocketError, websocketClose
+  //   - exit
+  //   - pointerdown, pointermove, pointerup
+  //   - keydown, keyup
   
-  ctx.fillStyle = '#f0f';
-  ctx.fillRect(model.pointer.x - 10, model.pointer.y - 10, 20, 20);
+  const ctx = window.context;
+  const model = {pointer: {x: 0, y: 0}, parity: false};
   
-  window.draw();
-}
-
-window.on('pointermove', e =>
-{
-  model.pointer.x = e.x;
-  model.pointer.y = e.y;
-  repaint();
-});
-
-setInterval(repaint, 500);
-
+  function repaint()
+  {
+    ctx.fillStyle = '#333';
+    ctx.fillRect(0, 0, 800, 600);
+  
+    ctx.fillStyle = model.parity ? '#393' : '#963';
+    ctx.fillRect(100, 100, 600, 400);
+    
+    ctx.fillStyle = '#f0f';
+    ctx.fillRect(model.pointer.x - 10, model.pointer.y - 10, 20, 20);
+    
+    window.draw();
+  }
+  
+  window.on('pointermove', e =>
+  {
+    model.pointer.x = e.x;
+    model.pointer.y = e.y;
+    repaint();
+  });
+  window.on('exit', e =>
+  {
+    // exit when browser window is closed (onbeforeunload)
+    clearInterval(blink);
+  });
+  
+  const blink = setInterval(() =>
+  {
+    model.parity = !model.parity;
+    repaint();
+  }, 500);
+})();
 ```
